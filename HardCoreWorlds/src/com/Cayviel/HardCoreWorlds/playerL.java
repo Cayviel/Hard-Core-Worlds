@@ -36,7 +36,7 @@ public class playerL extends PlayerListener {
 			if(times[1]>times[0]){
 				hi.disallow(Result.KICK_BANNED, "Sorry. You are banned from this server.");
 			}
-			hi.disallow(Result.KICK_BANNED, "Sorry. You are banned for about "+(times[0]-BanManager.getHour())+" more hours");
+			hi.disallow(Result.KICK_BANNED, "Sorry. You are banned for about "+(times[1]-BanManager.getHour())+" more hours");
 		}
 	}
 

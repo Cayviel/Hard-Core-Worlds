@@ -25,9 +25,13 @@ public class MiscFunctions {
 
 	public static String[] mergequotes(String[] args){
 		int wordcount = args.length;
+		if (wordcount == 0){
+			String[] s = {""};
+			return s;
+		}
 		if (wordcount == 1){
 			args[0].replace("\"","");
-			args[0].replace("\'","");
+			//args[0].replace("\'","");
 			return args;
 		}
 		String argstostring=args[0];

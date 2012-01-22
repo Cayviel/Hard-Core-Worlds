@@ -181,8 +181,9 @@ public class Commands {
 				default:
 					return false;
 				}
+			default:
+				return false;
 			}
-			return false;
 		}
 		return false;
 	}

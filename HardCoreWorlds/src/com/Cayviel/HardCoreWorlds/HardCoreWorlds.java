@@ -26,7 +26,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class HardCoreWorlds extends JavaPlugin{
 	public static Logger log = Logger.getLogger("Minecraft");
 	public Listener vh = new VirtualHunger(this);
-	public Listener newp = new playerL();
+	public Listener newp = new playerL(this);
 	public Listener CreatureDamage = new EntListen(this);
 	public static File datafolder;
 	public static boolean usePerm = false;
@@ -52,19 +52,20 @@ public class HardCoreWorlds extends JavaPlugin{
     	pm.registerEvent(Type.PLAYER_PRELOGIN, newp, Priority.Normal, this);
     	pm.registerEvent(Type.PLAYER_CHANGED_WORLD, newp, Priority.Normal, this);
     	pm.registerEvent(Type.ENTITY_DEATH, CreatureDamage, Priority.Normal, this);
+    	pm.registerEvent(Type.PLAYER_RESPAWN, newp, Priority.Normal, this);
+    	
     	if (isPriority(priority)){
     		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage, Priority.valueOf(priority), this);
     		}else{
         	log.info("[HardCoreWorlds]: 'Priority' field in 'Mob Difficulties.yml' not recognized, reverting to Priority 'Normal'");
     		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage, Priority.Normal, this);
     	}
-
 		// set up our permissions
 		if (pm.getPlugin("Permissions")!=null){
 			setupPermissions();
 			usePerm = true;
 		}
-    	
+		log.info("[HardCoreWorlds]: Enabled!");
 	}
     
 	public void onDisable(){
@@ -83,7 +84,7 @@ public class HardCoreWorlds extends JavaPlugin{
 		// grab an instance of the permissions plugin
 		Plugin permissionsPlugin = getServer().getPluginManager().getPlugin("Permissions");
 		permissionHandler = ((Permissions) permissionsPlugin).getHandler();
-		log.info("[HardCoreWorlds]: Found and will use plugin " + ((Permissions) permissionsPlugin).getDescription().getFullName());
+		//log.info("[HardCoreWorlds]: Found and will use plugin " + ((Permissions) permissionsPlugin).getDescription().getFullName());
 	}
 
 	public static boolean getPerm(String permission, OfflinePlayer player, boolean def){

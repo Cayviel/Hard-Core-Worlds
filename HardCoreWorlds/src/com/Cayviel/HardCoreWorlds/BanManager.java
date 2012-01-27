@@ -297,6 +297,14 @@ public class BanManager{
 			try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
 	}
 
+	public static void banMessage(Player player, World world){
+		if (BanManager.isBanPerm(player, world)){
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' forever!");
+		}else{
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' for about " + BanManager.getTimeLeft(player, world)+ " more hours!");	
+		}
+	}
+	
 	public static void banKickIn5(final Player player, final String kickmessage, HardCoreWorlds hcw){
 		
 		Runnable runit = new Runnable() {

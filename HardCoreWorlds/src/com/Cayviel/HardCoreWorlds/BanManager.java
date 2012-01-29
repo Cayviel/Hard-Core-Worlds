@@ -238,11 +238,16 @@ public class BanManager{
 
 	public static void unBan(String playerN, String worldN){
 		if (playerInList(playerN)){	
-			BannedList.set("Player."+ playerN +".World."+worldN, null);
-			BannedList.set("Player."+ playerN +".Server", null);
+			BannedList.set("Player."+ playerN +".World."+worldN+".Banned",false);
+			BannedList.set("Player."+ playerN +".World."+worldN+".Ban Began",null);
+			BannedList.set("Player."+ playerN +".World."+worldN+".Ban Ends",null);
+			
 			try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
+			
+			if (getPlayerLives(playerN, worldN)<=0){
+				setPlayerLives(playerN, worldN, Config.getWorldLives(worldN));
+			}
 		}
-		unServerBan(playerN);
 	}
 
 	public static boolean hasIgnoreBan(Player player){
@@ -293,10 +298,28 @@ public class BanManager{
 	}
 
 	public static void setBanDuration(String playerN, String worldN, int hours){
-			BannedList.set("Player."+playerN+".World."+worldN+".Ban Ends", getHour()+hours);
-			try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
+		BannedList.set("Player."+playerN+".World."+worldN+".Ban Ends", getHour()+hours);
+		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
+	}
+	public static int getPlayerLives(String playerN, String worldN){
+		FileSetup.load(BannedList,BannedListFile);
+		return BannedList.getInt("Player."+playerN+".World."+worldN+".Lives Remaining",Config.getWorldLives(worldN));
 	}
 
+	public static void setPlayerLives(String playerN, String worldN, int lives){
+		BannedList.set("Player."+playerN+".World."+worldN+".Lives Remaining",lives);
+		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
+		if (lives>0){
+			if (isBanned(playerN,worldN)){
+				unBan(playerN, worldN);
+			}
+		}else{
+			if (!isBanned(playerN,worldN)){
+				ban(playerN,worldN);
+			}
+		}
+	}
+	
 	public static void banMessage(Player player, World world){
 		if (BanManager.isBanPerm(player, world)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' forever!");

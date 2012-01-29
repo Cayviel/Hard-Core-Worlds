@@ -46,5 +46,6 @@ public class Config{
 	public static boolean getHc(String worldN){FileSetup.load(config,configfile); return (config.getBoolean("Worlds."+ worldN+".Hardcore",false));}
 	public static boolean getHc(World world, Player player){FileSetup.load(config,configfile); return (config.getBoolean("Worlds."+ world.getName()+".Hardcore",false)||BanManager.hasWorldBan(player, world));}
 	public static boolean getOC(){FileSetup.load(config,configfile); return config.getBoolean("Op Commands",false);}
+	public static int getWorldLives(String worldN){FileSetup.load(config,configfile); return config.getInt("Worlds."+worldN+".Lives",1);}
 	public static int getServerBanDuration(){FileSetup.load(config,configfile); return config.getInt("Server.Ban Duration",-1);}
 }

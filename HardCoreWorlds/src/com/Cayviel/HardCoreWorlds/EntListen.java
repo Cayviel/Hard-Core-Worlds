@@ -41,11 +41,14 @@ public class EntListen extends EntityListener{
 		World world = player.getWorld();					
 		if (! Config.getHc(world,player)) return;		//if world is not hardcore, and player isnt hardcore in this world, return
 		if (world.getName() == BanManager.BannedList.getString("Unbannable World")) return; // if this is the Unbannable world, return
-		
-		BanManager.ban(player, world, hcw); //Ban the player
-		BanManager.banMessage(player, world);
-		playerL.safetyWcheck(); //ensure Unbannable World exists
-		
+		int plives = BanManager.getPlayerLives(player.getName(), world.getName());
+		if (plives <= 1){
+			BanManager.ban(player, world, hcw); //Ban the player
+			BanManager.banMessage(player, world);
+			playerL.safetyWcheck(); //ensure Unbannable World exists
+		}
+		BanManager.setPlayerLives(player.getName(), world.getName(),plives-1);
+		player.sendMessage(BanManager.getPlayerLives(player.getName(), player.getWorld().getName()) + " lives remaining");
 		//Location spawn = BanManager.Ereturnworld.getSpawnLocation();
 		//player.teleport(spawn); //teleport player there.
 		

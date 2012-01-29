@@ -14,20 +14,21 @@ public class Commands {
 		hcw = HCW;
 	}
 
-	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION }
+	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES }
 	private static Logger log = Logger.getLogger("Minecraft");
 	
 	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args){
 		String[] words = MiscFunctions.mergequotes(args);
 		int arglength = words.length;
-		if (arglength < 2) return false;
+		if (arglength < 1) return false;
 		
 		boolean isplayer = (sender instanceof Player);
 		boolean bDur = false;
 
 		int i = 0; //default to 0 hours
 		String commandN = words[0].toUpperCase();
-		String playerN = words[1];
+		String playerN = "";
+		if (words.length>1){playerN = words[1];} else{ if(isplayer){playerN = ((Player)sender).getName();}else{playerN = "CONSOLE";}} 
 		String worldN;
 		
 		OfflinePlayer player = Bukkit.getOfflinePlayer(playerN);
@@ -51,7 +52,11 @@ public class Commands {
 			}
 			}
 		}else{
-			worldN = words[2]; 
+			if (arglength>2){
+				worldN = words[2];
+			}else{
+				worldN = "";
+			}
 		}
 		
 		if(arglength>=3){
@@ -62,7 +67,10 @@ public class Commands {
 		}
 		
 		if (command.getLabel().equalsIgnoreCase("hcw")){
-			
+			if (! enumContains(commandN)){ //if the chosen command is not recognized by the enum,
+				sendMessage("Unrecognized command: /hcw " +commandN, isplayer, sender);
+				return false;
+			}
 			if (isplayer){
 				Player playerb = (Player)sender;
 				
@@ -101,6 +109,14 @@ public class Commands {
 						BanManager.setBanDuration(player.getName(),worldN,i);
 						sendMessage(playerN+" ban duration set in world '"+worldN+ "' for "+i+" hours",sender);
 						return true;
+					case LIVES: //ex: /hcw Lives <player> <world> <integer>
+						if (player.isOnline()){
+							BanManager.setPlayerLives(playerN, worldN, i);
+							sendMessage(playerN+" Lives set to "+i+" in world "+ worldN,isplayer,sender);
+							return true;
+						}
+						return true;
+						
 						
 					default: return false;
 					}
@@ -127,9 +143,28 @@ public class Commands {
 							sendMessage(playerN+" banned on server",isplayer,sender);
 							BanManager.serverBan(playeron,hcw,i);
 							return true;
+						case LIVES: //ex: /hcw Lives <player> <integer>
+							if (player.isOnline()){
+								BanManager.setPlayerLives(playerN, playeron.getWorld().getName(), i);
+								sendMessage(playerN+" Lives set to "+i+" in world "+ playeron.getWorld().getName(),isplayer,sender);
+							}else{
+								sendMessage("With this command, either the player must be online, or a world must be specified",isplayer,sender);
+							}
+							return true;
+							
 						default: return false;
 					}
-					
+				case 2:
+					switch(commandList.valueOf(commandN)){
+					case LIVES: //ex /hcw lives <integer>
+						if(isplayer){
+							BanManager.setPlayerLives(((Player)sender).getName(),((Player)sender).getWorld().getName(),i);
+							sendMessage("Your lives set to " +i +" in world " + ((Player)sender).getWorld().getName(),isplayer,sender);
+						}else{
+							sendMessage("This command must be issued by a player, or a player must be specified",isplayer, sender);
+						}
+						return true;
+					}
 				default: return false;
 				}
 			}					
@@ -150,6 +185,10 @@ public class Commands {
 							}
 							BanManager.unBan(playerN,worldN);
 							sendMessage("Player "+playerN+" unbanned in world "+worldN,sender);
+							return true;
+						case LIVES: //ex: /hcw Lives <player> <world>
+							i= BanManager.getPlayerLives(playerN, worldN);
+							sendMessage(playerN+" has "+i+" live(s) in world "+ worldN,isplayer,sender);
 							return true;
 						default:
 							return false;
@@ -178,8 +217,23 @@ public class Commands {
 					sendMessage("Player "+playerN+" unbanned in world "+worldN,sender);
 					BanManager.unBan(playerN,worldN);						
 					return true;
-				default:
-					return false;
+				case LIVES: //ex: /hcw Lives <player>
+					if (player.isOnline()){
+						i= BanManager.getPlayerLives(playerN, ((Player)player).getWorld().getName());
+						sendMessage(playerN+" has "+i+" live(s) in world "+ ((Player)player).getWorld().getName(),isplayer,sender);
+					}else{
+						sendMessage("With this command, either the player must be online, or a world must be specified",isplayer,sender);
+					}
+					return true;
+				default: return false;
+				}
+			case 1:
+				switch (commandList.valueOf(commandN)){
+				case LIVES:
+					if (!isplayer) {sendMessage("This command must be issued by a player, or a player must be specified",isplayer,sender); return true;}
+					sendMessage("Your have " + BanManager.getPlayerLives(((Player)sender).getName(),((Player)sender).getWorld().getName()) + " live(s) remaining in world " + ((Player)sender).getWorld().getName(),isplayer,sender);
+					return true;
+				default: return false;
 				}
 			default:
 				return false;
@@ -215,6 +269,15 @@ public class Commands {
 			return false;
 		}
 		return true;
+	}
+	
+	public static boolean enumContains(String command) {
+	    for (commandList c : commandList.values()) {
+	        if (c.name().equals(command)) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 }

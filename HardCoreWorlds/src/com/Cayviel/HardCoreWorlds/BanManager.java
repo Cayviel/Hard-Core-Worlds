@@ -148,11 +148,11 @@ public class BanManager{
 	}
 	
 	public static void serverBan(OfflinePlayer player, HardCoreWorlds hcw){
-
 		if (player instanceof Player){
 		banKickIn5(((Player)player),"You have been banned from this server!",hcw);
 		((Player)player).sendMessage(ChatColor.RED + "You have been Banned from this server!  You have 5 seconds... Goodbye!");
 		}
+		BannedList.set("Player."+player.getName()+".Server.Lives",0);
 		BannedList.set("Player."+player.getName()+".Server.Ban", true);
 		BannedList.set("Player."+player.getName()+".Server.Ban Began", getHour());
 		BannedList.set("Player."+player.getName()+".Server.Ban Ends",  getHour()+Config.getServerBanDuration());
@@ -165,6 +165,7 @@ public class BanManager{
 		banKickIn5(((Player)player),"You have been banned from this server!",hcw);
 		((Player)player).sendMessage(ChatColor.RED + "You have been Banned from this server!  You have 5 seconds... Goodbye!");
 		}
+		BannedList.set("Player."+player.getName()+".Server.Lives",0);
 		BannedList.set("Player."+player.getName()+".Server.Ban", true);
 		BannedList.set("Player."+player.getName()+".Server.Ban Began", getHour());
 		BannedList.set("Player."+player.getName()+".Server.Ban Ends", getHour() + duration);
@@ -173,7 +174,13 @@ public class BanManager{
 	}
 
 	public static void unServerBan(String playerN){
+		String useLife=BannedList.getString("Player."+playerN+".Server.Use Lives","defaulted");
 		BannedList.set("Player."+playerN+".Server", null);
+		BannedList.set("Player."+playerN+".Server.Lives",Config.getServerLives());
+		if (useLife.equalsIgnoreCase("true") || useLife.equalsIgnoreCase("false")){ //if it was defined and not defaulted, then redefine to previous value, otherwise leave it gone.
+			BannedList.set("Player."+playerN+".Server.Use Lives",Boolean.parseBoolean(useLife.toLowerCase()));
+		}
+
 		OfflinePlayer player = Bukkit.getOfflinePlayer(playerN);
 		player.setBanned(false);
 		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
@@ -235,7 +242,30 @@ public class BanManager{
 			unServerBan(playerN);
 		}
 	}
+	
+	
+	public static boolean getSHc(OfflinePlayer player){ //get hardcore status of server
+		FileSetup.load(BannedList, BannedListFile);
+		if(hasServerBanI(player)){
+			return BannedList.getBoolean("Player."+player.getName()+".Server.Use Lives",Config.getUseServerLives());
+		}else{
+			return BannedList.getBoolean("Player."+player.getName()+".Server.Use Lives", false);
+		}
+		
+		}
 
+	public static void setSLives(OfflinePlayer player, int lives, HardCoreWorlds hcw){
+		if (lives >0) if (isServerBanned(player.getName())) unServerBan(player.getName());
+		if (lives <=0) if (!isServerBanned(player.getName())) serverBan(player, hcw);
+		BannedList.set("Player."+player.getName()+".Server.Lives",lives);
+		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
+	}
+	
+	public static int getSLives(String playerN){
+		FileSetup.load(BannedList, BannedListFile);
+		return (BannedList.getInt("Player."+playerN+".Server.Lives",Config.getServerLives()));
+	}
+	
 	public static void unBan(String playerN, String worldN){
 		if (playerInList(playerN)){	
 			BannedList.set("Player."+ playerN +".World."+worldN+".Banned",false);
@@ -247,6 +277,7 @@ public class BanManager{
 			if (getPlayerLives(playerN, worldN)<=0){
 				setPlayerLives(playerN, worldN, Config.getWorldLives(worldN));
 			}
+
 		}
 	}
 
@@ -283,7 +314,7 @@ public class BanManager{
 		if (HardCoreWorlds.getPerm(subPerm1, player, def)){
 			return(!HardCoreWorlds.getPerm(subPerm2, player, def));
 		}
-		return false;
+		return def;
 	}
 	
 	public static boolean hasWRperm(OfflinePlayer player,String subPerm1, String subPerm2, boolean def){

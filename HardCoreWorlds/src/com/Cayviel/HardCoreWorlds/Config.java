@@ -27,15 +27,9 @@ public class Config{
 	static void Defs(File cf){
 		config.addDefault("Op Commands",false);
 		config.addDefault("Server.Ban Duration", -1);
-		/*config.addDefault("Worlds.world.Hardcore",false);
-		config.addDefault("Worlds.Hardcore world 1.Hardcore",true);
-		config.addDefault("Worlds.Hardcore world 1.Ban Duration",-1);
-		config.addDefault("Worlds.Hardcore world 1.Mob Difficulty","Hard");
-		config.addDefault("Worlds.Hardcore world 2.Hardcore",true);
-		config.addDefault("Worlds.Hardcore world 2.Ban Duration",0);
-		config.addDefault("Worlds.Hardcore world 2.Mob Difficulty","VeryHard");
-		*/
-		config.options().header("'Ban Duration:' is in real hours. '-1' or a value less than zero indicates a permanent ban.");
+		config.addDefault("Server.Use Lives", false);
+		config.addDefault("Server.Lives", 5);
+		config.options().header("'Ban Duration:' is in real hours. '-1' indicates a perma-ban.  A negative server lives value indicates");
 		config.options().copyDefaults(true);
 		
 		FileSetup.saveconfig(config, cf);
@@ -44,8 +38,10 @@ public class Config{
 	public static String getDif(String worldN){FileSetup.load(config,configfile); return (config.getString("Worlds."+worldN+".Mob Difficulty","Hard"));}
 	public static int getBanL(String world){FileSetup.load(config,configfile); return config.getInt("Worlds."+  world +".Ban Duration",-1);}
 	public static boolean getHc(String worldN){FileSetup.load(config,configfile); return (config.getBoolean("Worlds."+ worldN+".Hardcore",false));}
-	public static boolean getHc(World world, Player player){FileSetup.load(config,configfile); return (config.getBoolean("Worlds."+ world.getName()+".Hardcore",false)||BanManager.hasWorldBan(player, world));}
+	public static boolean getHc(World world, Player player){FileSetup.load(config,configfile); FileSetup.load(BanManager.BannedList,BanManager.BannedListFile); return (config.getBoolean("Worlds."+ world.getName()+".Hardcore",false)||BanManager.hasWorldBan(player, world));}
 	public static boolean getOC(){FileSetup.load(config,configfile); return config.getBoolean("Op Commands",false);}
 	public static int getWorldLives(String worldN){FileSetup.load(config,configfile); return config.getInt("Worlds."+worldN+".Lives",1);}
 	public static int getServerBanDuration(){FileSetup.load(config,configfile); return config.getInt("Server.Ban Duration",-1);}
+	public static boolean getUseServerLives(){FileSetup.load(config,configfile); return config.getBoolean("Server.Use Lives",false);}
+	public static int getServerLives(){FileSetup.load(config,configfile); return config.getInt("Server.Lives",5);}
 }

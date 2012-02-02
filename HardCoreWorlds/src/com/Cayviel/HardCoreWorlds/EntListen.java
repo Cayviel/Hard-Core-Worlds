@@ -26,13 +26,9 @@ public class EntListen extends EntityListener{
 		if(!(damage.getDamager() instanceof Creature)) return; //continue only if a creature is doing the attacking
 		int sd = MobDifficulties.getDamage(damage.getDamager(), damage.getEntity().getWorld().getName()); //get Modified damage
 		if (sd > 0){
-			player.sendMessage("default damage: "+ damageE.getDamage());
 			damageE.setDamage(sd);	
-			player.sendMessage("damage set to "+sd);
-		}else{		//if defaulted, us standard default values for damage
-			player.sendMessage("damage not set");
 		}
-	}
+		}
 	
 	public void onEntityDeath(EntityDeathEvent dead){
 

@@ -51,7 +51,7 @@ public class playerL extends PlayerListener {
 			public void run() {												
 				player.teleport(spawn);
 			}
-		},1); //delay for 1 tick
+		},1); //delay for 1 ticks
 	}
 	
 	public void worldEnterResponse(Player player, World from, World to){
@@ -91,9 +91,12 @@ public class playerL extends PlayerListener {
 		if (BanManager.isBanned(player, toW)){
 			if (BanManager.isBanned(player, fromW)){
 				safetyWcheck();
+				/*delaySpawn(player, BanManager.Ereturnworld.getSpawnLocation());*/
 				player.teleport(BanManager.Ereturnworld.getSpawnLocation());
 				return;
-			}else{player.teleport(fromW.getSpawnLocation());
+			}else{
+				/*delaySpawn(player, fromW.getSpawnLocation());*/
+				player.teleport(fromW.getSpawnLocation());
 			return;
 			}
 		}

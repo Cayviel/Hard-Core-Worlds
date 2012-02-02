@@ -116,6 +116,7 @@ public class BanManager{
 	
 	public static void ban(OfflinePlayer player, World world, HardCoreWorlds hcw){
 	
+		/*
 		if (!player.isOnline()){
 			if (hasServerBanI(player)){
 				serverBan(player,hcw);
@@ -128,6 +129,8 @@ public class BanManager{
 				return;
 			}
 		}
+		*/
+		
 		playerL.safetyWcheck();
 		if (Ereturnworld == world){return;}
 		BannedList.set("Player."+ player.getName()+".World."+world.getName()+".Banned", true);
@@ -301,7 +304,7 @@ public class BanManager{
 	
 		
 	public static boolean hasServerBanI(OfflinePlayer player){
-		String subPerm1 = "ban.world.*";
+		String subPerm1 = "ban.server";
 		String subPerm2 = "ban.rmvforserver";
 		if (player instanceof Player){
 			return hasWRperm((Player)player,subPerm1,subPerm2, false);
@@ -352,10 +355,10 @@ public class BanManager{
 	}
 	
 	public static void banMessage(Player player, World world){
-		if (BanManager.isBanPerm(player, world)){
+		if (isBanPerm(player, world)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' forever!");
 		}else{
-			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' for about " + BanManager.getTimeLeft(player, world)+ " more hours!");	
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' for about " + getTimeLeft(player, world)+ " more hours!");	
 		}
 	}
 	

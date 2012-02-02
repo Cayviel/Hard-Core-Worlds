@@ -63,11 +63,7 @@ public class MobDifficulties {
 		try { MD.save(MDF);} catch (IOException e) {e.printStackTrace();}
 		
 	}
-	public static String getPriority(){
-		String priority = MD.getString("Priority","Normal");
-		priority = priority.substring(0,1).toUpperCase()+priority.substring(1).toLowerCase();
-		return  priority;
-	}
+
 	public static int getDamage(Entity damager, String worldN){
 		int damage;
 

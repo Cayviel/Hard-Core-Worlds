@@ -42,24 +42,25 @@ public class HardCoreWorlds extends JavaPlugin{
     	Config.initconfig();
     	BanManager.init();
     	MobDifficulties.init();
-    	String priority = MobDifficulties.getPriority();
+    	String priorityS = Config.getPriority();
+    	Priority priority = Priority.valueOf(priorityS);
     	OpCommands = Config.getOC();
     	
     	PluginManager pm = getServer().getPluginManager();
-    	pm.registerEvent(Type.ENTITY_DAMAGE, vh, Priority.Normal, this);
-    	pm.registerEvent(Type.FOOD_LEVEL_CHANGE, vh, Priority.Normal, this);
-    	pm.registerEvent(Type.PLAYER_LOGIN, newp, Priority.Normal, this);
-    	pm.registerEvent(Type.PLAYER_PRELOGIN, newp, Priority.Normal, this);
-    	pm.registerEvent(Type.PLAYER_CHANGED_WORLD, newp, Priority.Normal, this);
-    	pm.registerEvent(Type.ENTITY_DEATH, CreatureDamage, Priority.Normal, this);
-    	pm.registerEvent(Type.PLAYER_RESPAWN, newp, Priority.Normal, this);
-    	
-    	if (isPriority(priority)){
-    		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage, Priority.valueOf(priority), this);
-    		}else{
-        	log.info("[HardCoreWorlds]: 'Priority' field in 'Mob Difficulties.yml' not recognized, reverting to Priority 'Normal'");
-    		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage, Priority.Normal, this);
+    	if (!isPriority(priorityS)){//if priority isn't recognized
+    		priority = Priority.Normal; 
+    		log.info("[HardCoreWorlds]: Priority string in Config.yml not recognized, using default value");
     	}
+    		
+    	pm.registerEvent(Type.ENTITY_DAMAGE, vh, priority, this);
+    	pm.registerEvent(Type.FOOD_LEVEL_CHANGE, vh, priority, this);
+    	pm.registerEvent(Type.PLAYER_LOGIN, newp, priority, this);
+    	pm.registerEvent(Type.PLAYER_PRELOGIN, newp, priority, this);
+    	pm.registerEvent(Type.PLAYER_CHANGED_WORLD, newp, priority, this);
+    	pm.registerEvent(Type.ENTITY_DEATH, CreatureDamage, priority, this);
+    	pm.registerEvent(Type.PLAYER_RESPAWN, newp, priority, this);
+		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage,priority, this);
+    		
 		// set up our permissions
 		if (pm.getPlugin("Permissions")!=null){
 			setupPermissions();

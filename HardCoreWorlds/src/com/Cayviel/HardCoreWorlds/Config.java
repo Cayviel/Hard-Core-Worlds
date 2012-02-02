@@ -26,6 +26,7 @@ public class Config{
 	}
 	static void Defs(File cf){
 		config.addDefault("Op Commands",false);
+		config.addDefault("Priority", "High");
 		config.addDefault("Server.Ban Duration", -1);
 		config.addDefault("Server.Use Lives", false);
 		config.addDefault("Server.Lives", 5);
@@ -33,6 +34,12 @@ public class Config{
 		config.options().copyDefaults(true);
 		
 		FileSetup.saveconfig(config, cf);
+	}
+	
+	public static String getPriority(){
+		String priority = config.getString("Priority","High");
+		priority = priority.substring(0,1).toUpperCase()+priority.substring(1).toLowerCase();
+		return  priority;
 	}
 	
 	public static String getDif(String worldN){FileSetup.load(config,configfile); return (config.getString("Worlds."+worldN+".Mob Difficulty","Hard"));}

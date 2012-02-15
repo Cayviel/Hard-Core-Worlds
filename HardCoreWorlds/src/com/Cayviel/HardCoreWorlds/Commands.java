@@ -287,7 +287,7 @@ public class Commands {
 	}
 	
 	private static boolean commandPerms(Player playerb, CommandSender sender){
-		if(!HardCoreWorlds.getPerm("ban.commands",playerb,true)){
+		if(!HardCoreWorlds.getPerm("commands",playerb,true)){
 			sendMessage("You do not have permission to access this command", sender);
 			return false;
 		}

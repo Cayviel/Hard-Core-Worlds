@@ -1,8 +1,12 @@
 package com.Cayviel.HardCoreWorlds;
 
+import net.minecraft.server.Packet103SetSlot;
+
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerListener;
@@ -10,10 +14,12 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.WorldCreator;
 
 public class playerL extends PlayerListener {
+	
 	Plugin hcw;
 	playerL(HardCoreWorlds HCW){
 		hcw = HCW;
@@ -29,6 +35,7 @@ public class playerL extends PlayerListener {
 		if(! BanManager.EnterWorldRequest(player,inWorld)){
 			safetyWcheck();
 			player.teleport(BanManager.Ereturnworld.getSpawnLocation());
+			delayInvUpdate(player);
 			return;
 		}
 	}
@@ -50,10 +57,18 @@ public class playerL extends PlayerListener {
 		hcw.getServer().getScheduler().scheduleSyncDelayedTask(hcw, new Runnable(){		//Schedule a delayed task with the above time
 			public void run() {												
 				player.teleport(spawn);
+				delayInvUpdate(player);
 			}
 		},1); //delay for 1 ticks
 	}
 	
+	public void delayInvUpdate(final Player player){
+		hcw.getServer().getScheduler().scheduleSyncDelayedTask(hcw, new Runnable(){		//Schedule a delayed task with the above time
+			public void run() {		
+				updateInventory(player);
+		}
+		},1); //delay for 1 ticks	
+	}
 	public void worldEnterResponse(Player player, World from, World to){
 		if (! BanManager.EnterWorldRequest(player, to)){//if player is not granted permission to enter world,  
 			BanManager.banMessage(player,to);
@@ -93,10 +108,12 @@ public class playerL extends PlayerListener {
 				safetyWcheck();
 				/*delaySpawn(player, BanManager.Ereturnworld.getSpawnLocation());*/
 				player.teleport(BanManager.Ereturnworld.getSpawnLocation());
+				delayInvUpdate(player);
 				return;
 			}else{
 				/*delaySpawn(player, fromW.getSpawnLocation());*/
 				player.teleport(fromW.getSpawnLocation());
+				delayInvUpdate(player);
 			return;
 			}
 		}
@@ -109,5 +126,23 @@ public class playerL extends PlayerListener {
 			BanManager.Ereturnworld = wc.createWorld();
 		}
 	}
+	
+    public static void updateInventory(Player p) {
+        CraftPlayer c = (CraftPlayer) p;
+        for (int i = 0;i < 36;i++) {
+            int nativeindex = i;
+            if (i < 9) nativeindex = i + 36;
+            ItemStack olditem =  c.getInventory().getItem(i);
+            net.minecraft.server.ItemStack item = null;
+            if (olditem != null && olditem.getType() != Material.AIR) {
+                item = new net.minecraft.server.ItemStack(0, 0, 0);
+                item.id = olditem.getTypeId();
+                item.count = olditem.getAmount();
+                item.setData(olditem.getData().getData());
+            }
+            Packet103SetSlot pack = new Packet103SetSlot(0, nativeindex, item);
+            c.getHandle().netServerHandler.sendPacket(pack);
+        }
+    }
 	
 }

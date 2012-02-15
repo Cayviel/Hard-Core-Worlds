@@ -253,8 +253,7 @@ public class BanManager{
 			return BannedList.getBoolean("Player."+player.getName()+".Server.Use Lives",Config.getUseServerLives());
 		}else{
 			return BannedList.getBoolean("Player."+player.getName()+".Server.Use Lives", false);
-		}
-		
+		}		
 		}
 
 	public static void setSLives(OfflinePlayer player, int lives, HardCoreWorlds hcw){
@@ -316,6 +315,8 @@ public class BanManager{
 	public static boolean hasWRperm(Player player,String subPerm1, String subPerm2, boolean def){
 		if (HardCoreWorlds.getPerm(subPerm1, player, def)){
 			return(!HardCoreWorlds.getPerm(subPerm2, player, def));
+		}else{
+			((Player)player).sendMessage("Permission '"+subPerm1+"'not found for player :"+player.getName());
 		}
 		return def;
 	}

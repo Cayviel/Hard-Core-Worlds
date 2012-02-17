@@ -51,4 +51,6 @@ public class Config{
 	public static int getServerBanDuration(){FileSetup.load(config,configfile); return config.getInt("Server.Ban Duration",-1);}
 	public static boolean getUseServerLives(){FileSetup.load(config,configfile); return config.getBoolean("Server.Use Lives",false);}
 	public static int getServerLives(){FileSetup.load(config,configfile); return config.getInt("Server.Lives",5);}
+	public static int getWorldMinHP(String worldN){FileSetup.load(config, configfile); return (config.getInt("Worlds."+worldN+".MinHP",0));}
+	
 }

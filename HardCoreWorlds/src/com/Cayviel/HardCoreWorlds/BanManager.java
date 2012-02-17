@@ -313,11 +313,7 @@ public class BanManager{
 	}
 
 	public static boolean hasWRperm(Player player,String subPerm1, String subPerm2, boolean def){
-		if (HardCoreWorlds.getPerm(subPerm1, player, def)){
-			return(!HardCoreWorlds.getPerm(subPerm2, player, def));
-		}else{
-			((Player)player).sendMessage("Permission '"+subPerm1+"'not found for player :"+player.getName());
-		}
+		if (HardCoreWorlds.getPerm(subPerm1, player, def)) return(!HardCoreWorlds.getPerm(subPerm2, player, def));
 		return def;
 	}
 	

@@ -14,7 +14,7 @@ public class VirtualHunger extends EntityListener {
 	public void onFoodLevelChange(FoodLevelChangeEvent hungerchange){
 		if (!(hungerchange.getEntity() instanceof  Player)){return;}
 		Player player = (Player)hungerchange.getEntity();
-		if(hungerchange.getFoodLevel()==0 && player.getHealth() <= 10){
+		if(hungerchange.getFoodLevel()==0 && player.getHealth() <= 10 ){
 			delay(80, player);
 		}
 	}
@@ -38,9 +38,10 @@ public class VirtualHunger extends EntityListener {
 	}
 	
 	public static void vhunger(Player player){
+		String worldN = player.getWorld().getName();
 		int health = player.getHealth();
 		int foodlevel = player.getFoodLevel();
-		if (health<=10 && foodlevel == 0  && Config.getHc(player.getWorld(), player)){
+		if (Config.getWorldMinHP(worldN) < health && health<=10 && foodlevel == 0  && Config.getHc(player.getWorld(), player)){
 			player.damage(1);
 			delay(80, player);
 		}

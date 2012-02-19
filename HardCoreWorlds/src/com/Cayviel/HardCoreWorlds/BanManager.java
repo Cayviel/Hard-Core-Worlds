@@ -73,7 +73,7 @@ public class BanManager{
 		return false;
 	}
 	
-	public static int getTimeLeft(Player player, World world){
+	public static double getTimeLeft(Player player, World world){
 		FileSetup.load(BannedList, BannedListFile);
 		return getBanEnds(player, world)-getHour();
 	}
@@ -86,30 +86,30 @@ public class BanManager{
 		}
 	}
 	
-	private static int getBanBegin(Player player, World world){
-		Integer ii = BannedList.getInt("Player."+ player.getName()+".World."+world.getName()+".Ban Began", getHour());
-		int i;
+	private static double getBanBegin(Player player, World world){
+		Double ii = BannedList.getDouble("Player."+ player.getName()+".World."+world.getName()+".Ban Began", getHour());
+		double i;
 		if (ii != null){i = ii;}else{i=0;}
 		return i;
 	}
 
-	private static int getBanBegin(String player, String world){
-		Integer ii = BannedList.getInt("Player."+ player+".World."+world+".Ban Began", getHour());
-		int i;
+	private static double getBanBegin(String player, String world){
+		Double ii = BannedList.getDouble("Player."+ player+".World."+world+".Ban Began", getHour());
+		double i;
 		if (ii != null){i = ii;}else{i=0;}
 		return i;
 	}
 	
-	private static int getBanEnds(Player player, World world){
-		Integer ii = BannedList.getInt("Player."+ player.getName()+".World."+world.getName()+".Ban Ends", getHour());
-		int i;
+	private static double getBanEnds(Player player, World world){
+		Double ii = BannedList.getDouble("Player."+ player.getName()+".World."+world.getName()+".Ban Ends", getHour());
+		double i;
 		if (ii != null){i = ii;}else{i=0;}
 		return i;
 	}
 
-	private static int getBanEnds(String playerN, String worldN){
-		Integer ii = BannedList.getInt("Player."+ playerN+".World."+worldN+".Ban Ends", getHour());
-		int i;
+	private static double getBanEnds(String playerN, String worldN){
+		Double ii = BannedList.getDouble("Player."+ playerN+".World."+worldN+".Ban Ends", getHour());
+		double i;
 		if (ii != null){i = ii;}else{i=0;}
 		return i;
 	}
@@ -163,7 +163,7 @@ public class BanManager{
 		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
 	}
 	
-	public static void serverBan(OfflinePlayer player, HardCoreWorlds hcw, int duration){
+	public static void serverBan(OfflinePlayer player, HardCoreWorlds hcw, double duration){
 		if (player instanceof Player){
 		banKickIn5(((Player)player),"You have been banned from this server!",hcw);
 		((Player)player).sendMessage(ChatColor.RED + "You have been Banned from this server!  You have 5 seconds... Goodbye!");
@@ -189,17 +189,17 @@ public class BanManager{
 		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
 	}
 
-	public static int[] getServerBanTimes(Player player){
-		int[] times = {0,0};
-		times[0]=BannedList.getInt("Player."+player.getName()+".Server.Ban Began");
-		times[1]=BannedList.getInt("Player."+player.getName()+".Server.Ban Ends");
+	public static double[] getServerBanTimes(Player player){
+		double[] times = {0,0};
+		times[0]=BannedList.getDouble("Player."+player.getName()+".Server.Ban Began");
+		times[1]=BannedList.getDouble("Player."+player.getName()+".Server.Ban Ends");
 		return times;
 	}
 
-	public static int[] getServerBanTimes(String playerN){
-		int[] times = {0,0};
-		times[0]=BannedList.getInt("Player."+playerN+".Server.Ban Began");
-		times[1]=BannedList.getInt("Player."+playerN+".Server.Ban Ends");
+	public static double[] getServerBanTimes(String playerN){
+		double[] times = {0,0};
+		times[0]=BannedList.getDouble("Player."+playerN+".Server.Ban Began");
+		times[1]=BannedList.getDouble("Player."+playerN+".Server.Ban Ends");
 		return times;
 	}
 
@@ -216,9 +216,9 @@ public class BanManager{
 		return false;
 	}
 
-	static int getHour(){
+	static double getHour(){
 		Calendar cal = Calendar.getInstance();
-		return (cal.get(Calendar.YEAR)-2012)*8760+(cal.get(Calendar.DAY_OF_YEAR)-1)*24+cal.get(Calendar.HOUR_OF_DAY);
+		return (cal.get(Calendar.YEAR)-2012)*8760+(cal.get(Calendar.DAY_OF_YEAR)-1)*24+cal.get(Calendar.HOUR_OF_DAY)+cal.get(Calendar.MINUTE)/60.0;
 	}
 
 	public static void updateBan(Player player, World world){
@@ -237,8 +237,8 @@ public class BanManager{
 	}
 
 	public static void updateServerBan(String playerN){
-		int begins = getServerBanTimes(playerN)[0];
-		int ends = getServerBanTimes(playerN)[1];
+		double begins = getServerBanTimes(playerN)[0];
+		double ends = getServerBanTimes(playerN)[1];
 		FileSetup.load(BannedList, BannedListFile);
 		boolean banned = BannedList.getBoolean("Player."+playerN+".Server.Ban",false);
 		if ((getHour() >= ends && begins <= ends)|| !banned) {
@@ -328,7 +328,7 @@ public class BanManager{
 		return BannedList.contains("Player."+playerN);
 	}
 
-	public static void setBanDuration(String playerN, String worldN, int hours){
+	public static void setBanDuration(String playerN, String worldN, double hours){
 		BannedList.set("Player."+playerN+".World."+worldN+".Ban Ends", getHour()+hours);
 		try {BannedList.save(BannedListFile);} catch (IOException e) {e.printStackTrace();}
 	}
@@ -352,10 +352,13 @@ public class BanManager{
 	}
 	
 	public static void banMessage(Player player, World world){
+		double timeleft = getTimeLeft(player, world);
+		int hours = (int)getTimeLeft(player, world);
+		int minutes = (int)((timeleft-hours)*60);
 		if (isBanPerm(player, world)){
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' forever!");
 		}else{
-			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' for about " + getTimeLeft(player, world)+ " more hours!");	
+			player.sendMessage(ChatColor.LIGHT_PURPLE + "You are expelled from world '" + world.getName() + "' for about " +hours+ " more hours and "+minutes+" minutes.");	
 		}
 	}
 	

@@ -81,7 +81,7 @@ public class playerL extends PlayerListener {
 		if (! BanManager.isServerBanned(playerN)) return;
 		BanManager.updateServerBan(playerN);
 		if (BanManager.isServerBanned(playerN)){
-			int[] times = BanManager.getServerBanTimes(playerN);
+			double[] times = BanManager.getServerBanTimes(playerN);
 			if(times[1]>times[0]){
 				hi.disallow(Result.KICK_BANNED, "Sorry. You are banned from this server.");
 			}

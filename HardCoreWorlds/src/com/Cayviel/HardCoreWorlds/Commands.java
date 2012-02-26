@@ -14,7 +14,7 @@ public class Commands {
 		hcw = HCW;
 	}
 
-	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES }
+	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, MODLIVES }
 	private static Logger log = Logger.getLogger("Minecraft");
 	
 	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args){
@@ -62,6 +62,16 @@ public class Commands {
 			if ((! MiscFunctions.sContainsInt(words[2]))&&(! WorldExists(worldN))){
 				sendMessage("Could not find world '" + worldN +"'", sender);
 				return true;
+			}
+		}
+		
+		Player playeron = null;
+		if (arglength>1){
+			if (player.isOnline()){
+				playeron = (Player)player;
+				worldN = playeron.getWorld().getName();
+			}else{
+				playeron = Bukkit.getPlayer(playerN);
 			}
 		}
 		
@@ -115,16 +125,16 @@ public class Commands {
 							return true;
 						}
 						return true;
-						
+					case MODLIVES: //ex: /hcw Lives <player> <world> <integer>
+						if (player.isOnline()){
+							BanManager.setPlayerLives(playerN, worldN,BanManager.getPlayerLives(playerN,worldN)+i);
+							sendMessage(playerN+" Lives set to "+BanManager.getPlayerLives(playerN,worldN)+" in world "+ worldN,isplayer,sender);
+							return true;
+						}
+						return true;						
 					default: return false;
 					}
 				case 3: // if the wordlength is 3 and integer is present at end of list
-					Player playeron = Bukkit.getPlayer(playerN); 
-					if (playeron != null){
-						worldN = playeron.getWorld().getName();
-					}else{
-						playeron = (Player)player;
-					}
 					switch (commandList.valueOf(commandN)){
 						case BAN: //ex: /hcw ban <player> <integer>
 							if (! BanManager.ban(playerN,worldN)){sendMessage(playerN + " cannot be banned on the unbannable world!", sender); return true;}
@@ -145,6 +155,14 @@ public class Commands {
 							if (player.isOnline()){
 								BanManager.setPlayerLives(playerN, playeron.getWorld().getName(), i);
 								sendMessage(playerN+" Lives set to "+i+" in world "+ playeron.getWorld().getName(),isplayer,sender);
+							}else{
+								sendMessage("With this command, either the player must be online, or a world must be specified",isplayer,sender);
+							}
+							return true;
+						case MODLIVES: //ex: /hcw modlives <player> <integer>
+							if (player.isOnline()){
+								BanManager.setPlayerLives(playerN, playeron.getWorld().getName(), BanManager.getPlayerLives(playerN, playeron.getWorld().getName())+i);
+								sendMessage("Added "+i+" lives to player " + playerN+" in world "+ playeron.getWorld().getName(),isplayer,sender);
 							}else{
 								sendMessage("With this command, either the player must be online, or a world must be specified",isplayer,sender);
 							}

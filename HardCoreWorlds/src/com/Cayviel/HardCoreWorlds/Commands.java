@@ -14,7 +14,7 @@ public class Commands {
 		hcw = HCW;
 	}
 
-	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, MODLIVES }
+	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, USESERVERLIVES, MODLIVES, CONFIG, HARDCORE, MINHP, DIFFICULTY }
 	private static Logger log = Logger.getLogger("Minecraft");
 	
 	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args){
@@ -57,14 +57,14 @@ public class Commands {
 				worldN = "";
 			}
 		}
-		
+		/*
 		if(arglength>=3){
 			if ((! MiscFunctions.sContainsInt(words[2]))&&(! WorldExists(worldN))){
 				sendMessage("Could not find world '" + worldN +"'", sender);
 				return true;
 			}
 		}
-		
+		*/
 		Player playeron = null;
 		if (arglength>1){
 			if (player.isOnline()){
@@ -99,9 +99,67 @@ public class Commands {
 			}
 			if (MiscFunctions.sContainsInt(words[arglength-1])){
 				bDur = true;
+				if(!isInt(words[arglength-1],sender)) return true;
 				i = Integer.parseInt(words[arglength-1]);
 			}
 			
+			
+		switch (commandList.valueOf(commandN.toUpperCase())){ //ex hcw config <worldname> <Hardcore|BandDUration|Lives> <value of former statement >
+		case CONFIG:
+		switch (arglength){
+		case 4:
+			worldN = playerN;
+			if (!enumContains(words[2].toUpperCase())){sendMessage("unrecognized command "+ words[2],sender); return true;} 
+			switch (commandList.valueOf(words[2].toUpperCase())){
+				case HARDCORE:
+					if(!isBool(words[3],sender)) return true;
+					Config.setHc(worldN, Boolean.parseBoolean(words[3]));
+					sendMessage("World Hardcore: " + words[3],sender);
+					return true;
+				case BANDURATION:
+					if(!isDouble(words[3],sender)) return true;
+					Config.setBanL(worldN, Double.parseDouble(words[3]));
+					sendMessage("World Ban Duration: " + words[3],sender);
+					return true;
+				case LIVES:
+					if(!isInt(words[3],sender)) return true;
+					Config.setWorldLives(worldN, Integer.parseInt(words[3]));
+					sendMessage("World Life: " + words[3],sender);
+					return true;
+				case MINHP: 
+					if(!isInt(words[3],sender)) return true;
+					Config.setWorldMinHP(worldN, Integer.parseInt(words[3]));
+					sendMessage("World Min HP: " + words[3],sender);
+					return true;
+				default: return true;
+			}
+		case 3:
+			if (!enumContains(words[1].toUpperCase())){sendMessage("unrecognized command "+ words[1],sender); return true;}
+			switch (commandList.valueOf(words[1].toUpperCase())){
+				case USESERVERLIVES: 
+					if(!isInt(words[2],sender)) return true;
+					Config.setUseServerLives(Boolean.parseBoolean(words[2]));
+					sendMessage("Use Server Lives: " + words[2],sender);
+					return true;
+				case SERVERLIVES:
+					if(!isInt(words[2],sender)) return true;
+					Config.setServerLives(Integer.parseInt(words[2]));
+					sendMessage("Server Lives: " + words[2],sender);
+					return true;
+				default: return true;
+			}
+			default: return true;
+		}
+		case DIFFICULTY:
+		if (arglength==3){
+			worldN = playerN;
+			Config.setDif(worldN, words[2]);
+			sendMessage("World Difficulty: " + words[2],sender);
+			return true;
+		}
+		default: break;
+		}
+		
 			if (bDur){	//if there is an integer at end of words
 				switch (arglength){
 				case 4: // if the wordlength is 4
@@ -283,10 +341,10 @@ public class Commands {
 		return false;
 	}
 
-	private static boolean WorldExists(String worldN){
+	/*private static boolean WorldExists(String worldN){
 		return (Bukkit.getWorld(worldN) != null); 
 	}
-	
+	*/
 	private static void sendMessage(String message, boolean isplayer, CommandSender sender){
 		if (isplayer){
 			Player player = (Player)sender;
@@ -320,5 +378,36 @@ public class Commands {
 	    }
 	    return false;
 	}
+	
+	public static boolean isBool(String string, CommandSender sender){
+		try{
+			Boolean.parseBoolean(string);
+			return true;
+		}catch(NumberFormatException e){
+			sendMessage("This value must be True/False",sender);
+			return false;
+		}		
+	}
+	
+	public static boolean isInt(String string, CommandSender sender){
+		try{
+			Integer.parseInt(string);
+			return true;
+		}catch(NumberFormatException e){
+			sendMessage("This value must be an integer",sender);
+			return false;
+		}
+	}
+	
+	public static boolean isDouble(String string, CommandSender sender){
+		try{
+			Double.parseDouble(string);
+			return true;
+		}catch(NumberFormatException e){
+			sendMessage("This value must be a number",sender);
+			return false;
+		}
+	}
+	
 	
 }

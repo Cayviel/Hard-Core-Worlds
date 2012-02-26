@@ -32,7 +32,7 @@ public class HardCoreWorlds extends JavaPlugin{
 	public static boolean usePerm = false;
 	public static PermissionHandler permissionHandler;
 	public static PermissibleBase pb;
-	public static boolean OpCommands = false;
+	public static boolean OpCommands = true;
 	public static Server server;
 	
 	public void onEnable(){

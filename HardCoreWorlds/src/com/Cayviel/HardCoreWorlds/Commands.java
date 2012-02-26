@@ -33,7 +33,7 @@ public class Commands {
 		OfflinePlayer player = Bukkit.getOfflinePlayer(playerN);
 
 		if (arglength == 2){
-			if (!player.isOnline() && commandN == "BAN"){
+			if (!player.isOnline() && commandN.equalsIgnoreCase("BAN")){
 			sendMessage("With this command, either the player must be online, or a world must be specified, if you specified a world, check capitalization", sender);
 			return true;
 			}

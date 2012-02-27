@@ -74,7 +74,7 @@ public class HardCoreWorlds extends JavaPlugin{
 	}
 	
 	public boolean onCommand (CommandSender sender, Command command, String commandLabel, String[] args){
-		boolean success =  Commands.ParseCommand(sender,command,commandLabel,args);
+		boolean success =  Commands.ParseCommand(sender,command,commandLabel,args, this);
 		return success;
 	}
 	

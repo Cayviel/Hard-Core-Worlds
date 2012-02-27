@@ -9,15 +9,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class Commands {
-	private static HardCoreWorlds hcw;
-	Commands(HardCoreWorlds HCW){
-		hcw = HCW;
-	}
 
-	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, USESERVERLIVES, MODLIVES, CONFIG, HARDCORE, MINHP, DIFFICULTY }
+	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, USESERVERLIVES, MODLIVES, MODSERVERLIVES, CONFIG, HARDCORE, MINHP, DIFFICULTY }
 	private static Logger log = Logger.getLogger("Minecraft");
 	
-	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args){
+	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args, HardCoreWorlds hcw){
 		String[] words = MiscFunctions.mergequotes(args);
 		int arglength = words.length;
 		if (arglength < 1) return false;
@@ -189,7 +185,7 @@ public class Commands {
 							sendMessage(playerN+" Lives set to "+BanManager.getPlayerLives(playerN,worldN)+" in world "+ worldN,isplayer,sender);
 							return true;
 						}
-						return true;						
+
 					default: return false;
 					}
 				case 3: // if the wordlength is 3 and integer is present at end of list
@@ -228,6 +224,11 @@ public class Commands {
 						case SERVERLIVES: //ex: /hcw ServerLives <player> <integer>
 							BanManager.setSLives(player, i, hcw);
 							sendMessage(playerN+" Lives set to "+i+" on Server",isplayer,sender);
+							return true;
+							
+						case MODSERVERLIVES: //ex: /hcw MODSERVERLIVES <player> <integer>
+							BanManager.setSLives(player,BanManager.getSLives(playerN)+i,hcw);
+							sendMessage(playerN+"'s Server-Lives set to "+BanManager.getSLives(playerN),isplayer,sender);
 							return true;
 							
 						default: return false;

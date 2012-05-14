@@ -9,7 +9,9 @@ import org.bukkit.World.Environment;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.event.player.PlayerListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent.Result;
@@ -18,13 +20,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.WorldCreator;
 
-public class playerL extends PlayerListener {
+
+public class playerL implements Listener {
 	
 	Plugin hcw;
 	playerL(HardCoreWorlds HCW){
 		hcw = HCW;
 	}
 	
+	@EventHandler
 	public void onPlayerLogin (PlayerLoginEvent hi){
 		Player player = hi.getPlayer();
 		World inWorld = player.getWorld();
@@ -39,6 +43,8 @@ public class playerL extends PlayerListener {
 			return;
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	
 	public void onPlayerRespawn (PlayerRespawnEvent respawn){
 		Player player = respawn.getPlayer();			//entity is a player
@@ -76,6 +82,7 @@ public class playerL extends PlayerListener {
 		}
 	}
 	
+	@EventHandler
 	public void onPlayerPreLogin (PlayerPreLoginEvent hi){
 		String playerN = hi.getName();
 		if (! BanManager.isServerBanned(playerN)) return;
@@ -89,6 +96,7 @@ public class playerL extends PlayerListener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChangedWorld(PlayerChangedWorldEvent pMo){
 
 		World fromW, toW;

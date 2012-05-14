@@ -12,8 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -42,24 +40,20 @@ public class HardCoreWorlds extends JavaPlugin{
     	Config.initconfig();
     	BanManager.init();
     	MobDifficulties.init();
+    	/*
     	String priorityS = Config.getPriority();
-    	Priority priority = Priority.valueOf(priorityS);
+    	EventPriority priority = EventPriority.valueOf(priorityS.toUpperCase());
+    	*/
     	OpCommands = Config.getOC();
     	
     	PluginManager pm = getServer().getPluginManager();
-    	if (!isPriority(priorityS)){//if priority isn't recognized
-    		priority = Priority.Normal; 
+    	/*if (!isPriority(priorityS)){//if priority isn't recognized
+    		priority = EventPriority.NORMAL; 
     		log.info("[HardCoreWorlds]: Priority string in Config.yml not recognized, using default value");
-    	}
-    		
-    	pm.registerEvent(Type.ENTITY_DAMAGE, vh, priority, this);
-    	pm.registerEvent(Type.FOOD_LEVEL_CHANGE, vh, priority, this);
-    	pm.registerEvent(Type.PLAYER_LOGIN, newp, priority, this);
-    	pm.registerEvent(Type.PLAYER_PRELOGIN, newp, priority, this);
-    	pm.registerEvent(Type.PLAYER_CHANGED_WORLD, newp, priority, this);
-    	pm.registerEvent(Type.ENTITY_DEATH, CreatureDamage, priority, this);
-    	pm.registerEvent(Type.PLAYER_RESPAWN, newp, priority, this);
-		pm.registerEvent(Type.ENTITY_DAMAGE, CreatureDamage,priority, this);
+    	}*/
+    	pm.registerEvents(newp, this);
+    	pm.registerEvents(vh, this);
+    	pm.registerEvents(CreatureDamage, this);
     		
 		// set up our permissions
 		if (pm.getPlugin("Permissions")!=null){
@@ -102,12 +96,13 @@ public class HardCoreWorlds extends JavaPlugin{
 		return def;
 	}
 	
-	private static boolean isPriority(String string){
-		   for(Priority p : Priority.values()) {
+	/*public static boolean isPriority(String string){
+		   for(EventPriority p : EventPriority.values()) {
 			      if(p.toString().equalsIgnoreCase(string)) {
 			         return true;
 			      }
 			   }
 			   return false;
-	}
+	}*/
+	
 }

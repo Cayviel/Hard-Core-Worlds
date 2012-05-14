@@ -225,7 +225,7 @@ public class BanManager{
 
 	static double getHour(){
 		Calendar cal = Calendar.getInstance();
-		return (cal.get(Calendar.YEAR)-2012)*8760+(cal.get(Calendar.DAY_OF_YEAR)-1)*24+cal.get(Calendar.HOUR_OF_DAY)+cal.get(Calendar.MINUTE)/60.0;
+		return (cal.get(Calendar.YEAR)-2012)*8760+(cal.get(Calendar.DAY_OF_YEAR)-1)*24+cal.get(Calendar.HOUR_OF_DAY)+cal.get(Calendar.MINUTE)/60.0+cal.get(Calendar.SECOND)/3600.0;
 	}
 
 	public static void updateBan(Player player, World world){

@@ -8,15 +8,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityListener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 
 
-public class EntListen extends EntityListener{
+public class EntListen implements Listener{
+	
 	private static HardCoreWorlds hcw;
 	EntListen(HardCoreWorlds HCW){
 		hcw= HCW;
 	}
 	
+	@EventHandler
 	public void onEntityDamage(EntityDamageEvent damageE){
 		if(!(damageE instanceof EntityDamageByEntityEvent)) return;	//continue only if entity damages entity
 		if (!(damageE.getEntity() instanceof Player)) return;		//continue only if player is hurt
@@ -30,6 +33,7 @@ public class EntListen extends EntityListener{
 		}
 		}
 	
+	@EventHandler
 	public void onEntityDeath(EntityDeathEvent dead){
 
 		if (!(dead.getEntity() instanceof Player)){return;} //if not instance of player return

@@ -10,14 +10,14 @@ import org.bukkit.entity.Player;
 
 public class Commands {
 
-	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, USESERVERLIVES, MODLIVES, MODSERVERLIVES, CONFIG, HARDCORE, MINHP, DIFFICULTY }
+	private enum commandList { UNSERVERBAN, SERVERBAN, BAN, UNBAN, BANDURATION, LIVES, SERVERLIVES, USESERVERLIVES, MODLIVES, MODSERVERLIVES, CONFIG, HARDCORE, GIVELIFE,MINHP, DIFFICULTY }
 	private static Logger log = Logger.getLogger("Minecraft");
 	
 	public static boolean ParseCommand(CommandSender sender, Command command, String commandLabel, String[] args, HardCoreWorlds hcw){
 		String[] words = MiscFunctions.mergequotes(args);
 		int arglength = words.length;
 		if (arglength < 1) return false;
-		
+		boolean haspermission = false;
 		boolean isplayer = (sender instanceof Player);
 		boolean bDur = false;
 
@@ -61,6 +61,14 @@ public class Commands {
 			}
 		}
 		*/
+		if (words[0].equalsIgnoreCase("lives")&&words.length==1){
+			haspermission = true;
+		}
+		
+		if (HardCoreWorlds.getPerm("givelives", player, false)){
+			haspermission = true;
+		}		
+		
 		Player playeron = null;
 		if (arglength>1){
 			if (player.isOnline()){
@@ -78,14 +86,15 @@ public class Commands {
 			}
 			if (isplayer){
 				Player playerb = (Player)sender;
-				
-				if (HardCoreWorlds.OpCommands){ //if op commands are enabled
-					if(!playerb.isOp()){ //and the player is not op, check permissions
+				if (!haspermission){
+					if (HardCoreWorlds.OpCommands){ //if op commands are enabled
+						if(!playerb.isOp()){ //and the player is not op, check permissions
+							if(! commandPerms(playerb, sender)) return true;
+						}
+						//player is an op, so continue as normal
+					}else{//if op commands are not enabeled, check permissions
 						if(! commandPerms(playerb, sender)) return true;
 					}
-					//player is an op, so continue as normal
-				}else{//if op commands are not enabeled, check permissions
-					if(! commandPerms(playerb, sender)) return true;
 				}
 			}
 			
@@ -122,6 +131,17 @@ public class Commands {
 					Config.setWorldLives(worldN, Integer.parseInt(words[3]));
 					sendMessage("World Life: " + words[3],sender);
 					return true;
+				case GIVELIFE:
+					if(!isInt(words[3],sender)) return true;
+					if (isplayer){
+						Config.setWorldLives(worldN, BanManager.getPlayerLives(playerN, worldN)+1);
+						Config.setWorldLives(worldN, BanManager.getPlayerLives(((Player)sender).getName(),worldN)-1);
+						sendMessage("Life Transferred!",sender);
+						return true;
+					}else{
+						sendMessage("This command must be issued by a player",sender);
+						return true;
+					}
 				case MINHP: 
 					if(!isInt(words[3],sender)) return true;
 					Config.setWorldMinHP(worldN, Integer.parseInt(words[3]));
@@ -132,6 +152,17 @@ public class Commands {
 		case 3:
 			if (!enumContains(words[1].toUpperCase())){sendMessage("unrecognized command "+ words[1],sender); return true;}
 			switch (commandList.valueOf(words[1].toUpperCase())){
+				case GIVELIFE:
+					if(!isInt(words[2],sender)) return true;
+					if (isplayer){
+						Config.setWorldLives(worldN, BanManager.getPlayerLives(playerN, worldN)+1);
+						Config.setWorldLives(worldN, BanManager.getPlayerLives(((Player)sender).getName(),((Player)sender).getWorld().getName())-1);
+						sendMessage("Life Transferred!",sender);
+						return true;
+					}else{
+						sendMessage("This command must be issued by a player",sender);
+						return true;
+					}
 				case USESERVERLIVES: 
 					if(!isInt(words[2],sender)) return true;
 					Config.setUseServerLives(Boolean.parseBoolean(words[2]));

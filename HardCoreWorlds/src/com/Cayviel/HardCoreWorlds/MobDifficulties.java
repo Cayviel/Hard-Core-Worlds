@@ -9,7 +9,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.EntityType;
 
 
 public class MobDifficulties {
@@ -38,8 +38,8 @@ public class MobDifficulties {
 		MD.set("Hard.ENDERMAN",10);
 		MD.set("Hard.SKELETON",6);
 		MD.set("Hard.SPIDER",3);
-		MD.set("Hard.ZOMBIE",7);
-		MD.set("Hard.PIG_ZOMBIE",7);
+		MD.set("Hard.ZOMBIE",6);
+		MD.set("Hard.PIG_ZOMBIE",6);
 		MD.set("Hard.MAGMA_CUBE",4);
 		MD.set("Hard.GHAST",17);
 		MD.set("Hard.GIANT",17);
@@ -52,8 +52,8 @@ public class MobDifficulties {
 		MD.set("Very Hard.ENDERMAN",15);
 		MD.set("Very Hard.SKELETON",9);
 		MD.set("Very Hard.SPIDER",5);
-		MD.set("Very Hard.ZOMBIE",11);
-		MD.set("Very Hard.PIG_ZOMBIE",11);
+		MD.set("Very Hard.ZOMBIE",9);
+		MD.set("Very Hard.PIG_ZOMBIE",9);
 		MD.set("Very Hard.MAGMA_CUBE",6);
 		MD.set("Very Hard.GHAST",19);
 		MD.set("Very Hard.GIANT",19);
@@ -71,14 +71,15 @@ public class MobDifficulties {
 		return damage;
 	}
 	
-	public static CreatureType creatureTypeFromEntity(Entity entity) {
+	public static EntityType creatureTypeFromEntity(Entity entity) {
 	    if ( ! (entity instanceof Creature)) {
 	        return null;
 	    }
+
 	    String name = entity.getClass().getSimpleName();
 	    name = name.substring(5); // Remove "Craft"
 	    name.toUpperCase();
 
-	    return CreatureType.fromName(name);
+	    return EntityType.fromName(name);
 	}
 }

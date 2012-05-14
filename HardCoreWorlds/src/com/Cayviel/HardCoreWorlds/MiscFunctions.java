@@ -6,13 +6,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.World;
-import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
 
 public class MiscFunctions {
 
-	public static CreatureType creatureTypeFromEntity(Entity entity) {
+	public static EntityType creatureTypeFromEntity(Entity entity) {
 	    if ( ! (entity instanceof Creature)) {
 	        return null;
 	    }
@@ -20,7 +20,7 @@ public class MiscFunctions {
 	    name = name.substring(5); // Remove "Craft"
 	    name.toUpperCase();
 
-	    return CreatureType.fromName(name);
+	    return EntityType.fromName(name);
 	}
 
 	public static String[] mergequotes(String[] args){

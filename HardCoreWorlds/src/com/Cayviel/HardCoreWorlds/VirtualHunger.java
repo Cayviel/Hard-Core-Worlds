@@ -1,16 +1,18 @@
 package com.Cayviel.HardCoreWorlds;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 
-public class VirtualHunger extends EntityListener {
+public class VirtualHunger implements Listener {
 	private static HardCoreWorlds hcw;
 	VirtualHunger(HardCoreWorlds p){
 		hcw = p;
 	}
 	
+	@EventHandler
 	public void onFoodLevelChange(FoodLevelChangeEvent hungerchange){
 		if (!(hungerchange.getEntity() instanceof  Player)){return;}
 		Player player = (Player)hungerchange.getEntity();
@@ -19,6 +21,7 @@ public class VirtualHunger extends EntityListener {
 		}
 	}
 	
+	@EventHandler
 	public void onEntityDamage(EntityDamageEvent eDamage){
 		if (!(eDamage.getEntity() instanceof  Player)){return;}
 		Player player = (Player)eDamage.getEntity();

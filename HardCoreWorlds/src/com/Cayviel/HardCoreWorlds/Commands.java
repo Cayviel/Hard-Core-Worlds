@@ -164,7 +164,7 @@ public class Commands {
 						return true;
 					}
 				case USESERVERLIVES: 
-					if(!isInt(words[2],sender)) return true;
+					if(!isBool(words[2],sender)) return true;
 					Config.setUseServerLives(Boolean.parseBoolean(words[2]));
 					sendMessage("Use Server Lives: " + words[2],sender);
 					return true;

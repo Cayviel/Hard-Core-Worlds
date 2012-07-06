@@ -88,6 +88,7 @@ public class BanManager{
 	}
 	
 	private static double getBanBegin(Player player, World world){
+		FileSetup.load(BannedList, BannedListFile);
 		Double ii = BannedList.getDouble("Player."+ player.getName().toLowerCase()+".World."+world.getName()+".Ban Began", getHour());
 		double i;
 		if (ii != null){i = ii;}else{i=0;}
@@ -95,6 +96,7 @@ public class BanManager{
 	}
 
 	private static double getBanBegin(String player, String world){
+		FileSetup.load(BannedList, BannedListFile);
 		Double ii = BannedList.getDouble("Player."+ player+".World."+world+".Ban Began", getHour());
 		double i;
 		if (ii != null){i = ii;}else{i=0;}
@@ -102,6 +104,7 @@ public class BanManager{
 	}
 	
 	private static double getBanEnds(Player player, World world){
+		FileSetup.load(BannedList, BannedListFile);
 		Double ii = BannedList.getDouble("Player."+ player.getName().toLowerCase()+".World."+world.getName()+".Ban Ends", getHour());
 		double i;
 		if (ii != null){i = ii;}else{i=0;}
@@ -109,6 +112,7 @@ public class BanManager{
 	}
 
 	private static double getBanEnds(String playerN, String worldN){
+		FileSetup.load(BannedList, BannedListFile);
 		Double ii = BannedList.getDouble("Player."+ playerN+".World."+worldN+".Ban Ends", getHour());
 		double i;
 		if (ii != null){i = ii;}else{i=0;}

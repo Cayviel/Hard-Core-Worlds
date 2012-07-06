@@ -19,7 +19,7 @@ public class BanManager{
 		hcw = HCW;
 	}
 	
-	static World Ereturnworld;
+	public static World Ereturnworld;
 	static File BannedListFile;
     static FileConfiguration BannedList = new YamlConfiguration();	
     
@@ -329,10 +329,8 @@ public class BanManager{
 	}
 	
 	public static boolean hasWRperm(OfflinePlayer player,String subPerm1, String subPerm2, boolean def){
-		if (HardCoreWorlds.getPerm(subPerm1, player, def)){
-			return(!HardCoreWorlds.getPerm(subPerm2, player, def));
-		}
-		return false;
+		if (HardCoreWorlds.getPerm(subPerm1, player, def)) return(!HardCoreWorlds.getPerm(subPerm2, player, def));
+		return def;
 	}
 	
 	public static boolean playerInList(String playerN){

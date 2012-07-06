@@ -107,8 +107,8 @@ public class Commands {
 				if(!isInt(words[arglength-1],sender)) return true;
 				i = Integer.parseInt(words[arglength-1]);
 			}
-			
-			
+
+
 		switch (commandList.valueOf(commandN.toUpperCase())){ //ex hcw config <worldname> <Hardcore|BandDUration|Lives> <value of former statement >
 		case CONFIG:
 		switch (arglength){
@@ -190,6 +190,7 @@ public class Commands {
 			if (bDur){	//if there is an integer at end of words
 				switch (arglength){
 				case 4: // if the wordlength is 4
+					worldN = words[2];
 					switch (commandList.valueOf(commandN)){
 					case BAN://ex: /hcw ban <player> <world> <integer>
 						if (! BanManager.ban(playerN,worldN)){sendMessage(playerN + " cannot be banned on the unbannable world!", sender); return true;}
@@ -291,6 +292,7 @@ public class Commands {
 			//no integer is present at the end of list
 			switch (arglength){
 			case 3:// if wordlength is 3
+				worldN = words[2];
 				switch (commandList.valueOf(commandN)) {
 						case BAN: //ex: /hcw ban <player> <world>
 							if (! BanManager.ban(playerN,worldN)){sendMessage(playerN + " cannot be banned on the unbannable world!", sender); return true;}

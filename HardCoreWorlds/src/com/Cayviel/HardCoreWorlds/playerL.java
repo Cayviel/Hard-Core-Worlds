@@ -53,7 +53,7 @@ public class playerL implements Listener {
 		if (world.getName() == BanManager.BannedList.getString("Unbannable World")) return; // if this is the Unbannable world, let them pass
 		if (BanManager.isBanned(player, world)){
 			safetyWcheck(); //ensure Unbannable World exists
-			Location spawn = BanManager.Ereturnworld.getSpawnLocation();
+			Location spawn = Config.getNextW(world.getName()).getSpawnLocation();
 			respawn.setRespawnLocation(spawn); //define the spawn location to be the world the player is now in
 			delaySpawn(player, spawn);
 		}

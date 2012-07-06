@@ -3,6 +3,7 @@ package com.Cayviel.HardCoreWorlds;
 import java.io.File;
 //import java.io.IOException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -52,6 +53,8 @@ public class Config{
 	public static boolean getUseServerLives(){FileSetup.load(config,configfile); return config.getBoolean("Server.Use Lives",false);}
 	public static int getServerLives(){FileSetup.load(config,configfile); return config.getInt("Server.Lives",5);}
 	public static int getWorldMinHP(String worldN){FileSetup.load(config, configfile); return (config.getInt("Worlds."+worldN+".MinHP",0));}
+	private static String getNextWn(String worldN){FileSetup.load(config,configfile); return config.getString("Worlds."+worldN+".Next World",BanManager.getubWN());};
+	public static World getNextW(String worldN){ String nextWN = getNextWn(worldN);	World next = BanManager.Ereturnworld; if (Bukkit.getWorld(nextWN) != null) next = Bukkit.getWorld(nextWN); return next;}
 	
 	public static void setHc(String worldN, boolean bool){FileSetup.load(config,configfile);  config.set("Worlds."+ worldN+".Hardcore",bool); FileSetup.saveconfig(config, configfile);}
 	public static void setWorldLives(String worldN, int lives){FileSetup.load(config,configfile);  config.set("Worlds."+worldN+".Lives",lives); FileSetup.saveconfig(config, configfile);}

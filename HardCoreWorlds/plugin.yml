@@ -1,6 +1,6 @@
 name: HardCoreWorlds
 main: com.Cayviel.HardCoreWorlds.HardCoreWorlds
-version: 1.4
+version: 1.4.7b
 commands:
   hcw:
     description: Allows the creation of and removal of a ban from a player, and the manipulation of the ban's duration.
